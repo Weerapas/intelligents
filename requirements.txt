@@ -4,7 +4,7 @@ pandas
 Pillow==11.1.0
 requests
 numpy
-sklearn
+scikit-learn
 keras_preprocessing
 streamlit-option-menu
 gdown
