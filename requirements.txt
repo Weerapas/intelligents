@@ -3,5 +3,6 @@ tensorflow-cpu
 Pillow==11.1.0
 requests
 numpy
+keras_preprocessing
 streamlit-option-menu
 gdown
