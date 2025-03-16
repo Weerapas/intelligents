@@ -1,6 +1,5 @@
 streamlit
 tensorflow-cpu
-pandas
 Pillow==11.1.0
 requests
 numpy
