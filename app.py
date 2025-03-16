@@ -5,15 +5,23 @@ from keras_preprocessing import image
 from PIL import Image
 import os
 from streamlit_option_menu import option_menu
+import gdown
+
+
+file_id2 = "1AjI-zbp-dBcFIIilD6u_z8HRm0oUYJ96"
+output2 = "cat_dog_classifier.h5"  # เปลี่ยนเป็นไฟล์ .h5
+
+# ดาวน์โหลดไฟล์จาก Google Drive
+gdown.download(f"https://drive.google.com/uc?id={file_id2}", output2, quiet=False, verify=False)
+
+
+
+# โหลดโมเดล Keras จากไฟล์ .h5
+
 
 # โหลดโมเดลเพียงครั้งเดียว
-MODEL_PATH = 'cat_dog_classifier.h5'
-@st.cache_resource
-def load_model():
-    model = tf.keras.models.load_model(MODEL_PATH)
-    return model
 
-model = load_model()
+model = tf.keras.models.load_model(output2)
 
 def predict(img):
     img = img.resize((128, 128))  # ปรับขนาดให้ตรงกับโมเดล
