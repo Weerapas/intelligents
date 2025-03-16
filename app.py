@@ -6,7 +6,10 @@ from PIL import Image
 import os
 from streamlit_option_menu import option_menu
 import gdown
-
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+import pandas as pd
 
 file_id2 = "1AjI-zbp-dBcFIIilD6u_z8HRm0oUYJ96"
 output2 = "cat_dog_classifier.h5"  # เปลี่ยนเป็นไฟล์ .h5
@@ -14,7 +17,11 @@ output2 = "cat_dog_classifier.h5"  # เปลี่ยนเป็นไฟล�
 # ดาวน์โหลดไฟล์จาก Google Drive
 gdown.download(f"https://drive.google.com/uc?id={file_id2}", output2, quiet=False, verify=False)
 
+file_id = "1ywoNNML2DF_kpROvOWSAZGH3-tJAsRX-"
+output3 = "spam.csv"  # เปลี่ยนเป็นไฟล์ .h5
 
+# ดาวน์โหลดไฟล์จาก Google Drive
+gdown.download(f"https://drive.google.com/uc?id={file_id}", output3, quiet=False, verify=False)
 
 # โหลดโมเดล Keras จากไฟล์ .h5
 
@@ -48,7 +55,7 @@ if selected == "🏠 หน้าแรก":
     st.write("โมเดล AI สำหรับทำนายว่าเป็นแมวหรือสุนัข!")
 
 # หน้าอัปโหลดและทำนายภาพ
-elif selected == "Neural Network":
+if selected == "Neural Network":
     st.title("📸 อัปโหลดรูปภาพ")
     uploaded_file = st.file_uploader("เลือกไฟล์รูปภาพ", type=["jpg", "png", "jpeg"])
 
@@ -65,8 +72,35 @@ elif selected == "Neural Network":
             st.success(f'🐱 นี่คือแมว! (ความมั่นใจ: {round((1 - prediction) * 100, 2)}%)')
 
 # หน้าเกี่ยวกับแอป
-elif selected == "Machine Learning":
+if selected == "Machine Learning":
     st.title("ℹ️ เกี่ยวกับแอปนี้")
-    st.write("📌 แอปนี้ใช้โมเดล Deep Learning (CNN) ในการจำแนกภาพว่าเป็นแมวหรือสุนัข")
-    st.write("👨‍💻 พัฒนาโดย [ใส่ชื่อคุณ]")
+    data = pd.read_csv(output3)
+    data.drop_duplicates(inplace = True)
+    data['Category'] = data['Category'].replace(['ham','spam'],['Not Spam','Spam'])
+    # print(data.head())
+    mess = data['Message']
+    cat = data['Category']
+
+    (mess_train, mess_test, cat_train, cat_test) = train_test_split(mess, cat, test_size=0.2)
+
+    cv = CountVectorizer(stop_words='english')
+    features= cv.fit_transform(mess_train)
+
+
+    model = MultinomialNB()
+    model.fit(features, cat_train)
+
+    features_test = cv.transform(mess_test)
+    # print(model.score(features_test, cat_test))
+    def predict(message):
+        input_message = cv.transform([message]).toarray()
+        result = model.predict(input_message)
+        return result
+
+    st.header('Spam Detection')
+    input_mess = st.text_input('Enter your message')
+
+    if st.button('Validate'):
+        output = predict(input_mess)
+        st.markdown(output)
 
