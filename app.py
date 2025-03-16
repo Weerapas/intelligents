@@ -61,7 +61,7 @@ if selected == "Neural Network":
 
     if uploaded_file is not None:
         image_display = Image.open(uploaded_file)
-        st.image(image_display, caption="อัปโหลดรูปของคุณ", use_container_width = true)
+        st.image(image_display, caption="อัปโหลดรูปของคุณ", use_container_width = True)
 
         st.write("🔄 กำลังประมวลผล...")
         prediction = predict(image_display)
