@@ -1,8 +1,8 @@
 streamlit
 tensorflow-cpu
 pandas
+Pillow==11.1.0
 requests
 numpy
-pickle5
 streamlit-option-menu
-Pillow==11.1.0
+gdown
